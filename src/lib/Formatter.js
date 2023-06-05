@@ -3,7 +3,7 @@ const { random_item, shuffle, random_integer } = require("../utils/functions.js"
 class Formatter {
   static formats = []
   
-  static make (min = 3, max = 5, character = "abcdefghijklmnopqrstuvwxyz0123456789") {
+  static make (min = 3, max = 5, character = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_ `) {
     let each = random_integer(min, max);
     let chars = character.split("");
     let res = "";
@@ -18,7 +18,7 @@ class Formatter {
     }
   }
   
-  static create ({ character = "abcdefghijklmnopqrstuvwxyz0123456789 " }) {
+  static create (character = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$)(!?:][|/-*+%&,"'=><;.\n}{_ `) {
     let chars = character.split("");
     let res = {};
     
