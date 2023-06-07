@@ -1,4 +1,8 @@
 # fast encryptor
+fast encryptor for text/file (not binary) without any libraries required.
+
+![npm package name](https://img.shields.io/npm/v/fast-encrypt?label=fast-encrypt&style=plastic)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/fast-encrypt?style=plastic)
 
 ## encryption
 ### encrypt text of string
@@ -66,8 +70,11 @@ let encryptor = JSON.parse(encryptorContent);
 
 let pathfile = path.resolve("./path/to/some-encrypted-file.js");
 let fileContent = fs.readFileSync(pathfile, "utf8");
-let decrypted = Encryptor.decrypt(fileContent, encryptor.format); // return decrypted file contents
+let decrypted = Encryptor.decrypt(fileContent, encryptor.formats); // return decrypted file contents
 
 // write content of dencrypted on file
 fs.writeFileSync(pathfile, decrypted);
 ```
+
+
+> built with ♥️ by fiandev
