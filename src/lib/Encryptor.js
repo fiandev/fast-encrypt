@@ -5,7 +5,7 @@ const Formatter = require("./Formatter.js");
 const { now } = require("../utils/functions.js");
 
 class Encryptor {
-  static generate_decryptor(hash, format = {}, config = {}) {
+  static generate_decryptor(result = {}, config) {
     const { output, pretty = true } = config;
     const supported_extension = [".json"];
     
@@ -13,19 +13,17 @@ class Encryptor {
     if (!supported_extension.includes(ext)) throw new Error(`Unsupported extension for decryptor file expected [${ supported_extension.toString().replace(",", "|") }]`);
     
     let path_output = path.join(process.cwd(), output.path);
+    
     try {
       if (!fs.existsSync(path_output)) fs.mkdirSync(path_output, { recursive: true });
     } catch (e) {
       throw new Error(`can't create path of folders`);
     }
     
+    let pathFile = path.join(path_output, output.filename);
     fs.writeFileSync(
-      path.join(path_output, output.filename),
-      JSON.stringify({
-        hash: hash,
-        format: format,
-        date: now()
-      }, null, pretty ? 2 : 0)
+      pathFile,
+      JSON.stringify(result, null, pretty ? 2 : 0)
     );
     
     console.log(`create file ${ output.filename }`);
@@ -33,18 +31,27 @@ class Encryptor {
   
   static encrypt (text, config = {}) {
     let chars = text.split("");
-    let format = Formatter.create();
-    let result = chars.map(char => format[char] || " ").join("");
+    let formats = Formatter.create();
+    let hash = chars.map(char => formats[char] || " ").join("");
     
-    Encryptor.generate_decryptor(result, format, config);
+    let result = {
+      hash: Buffer.from(hash).toString("base64"),
+      formats: formats,
+      date: now()
+    };
+    
+    Encryptor.generate_decryptor(result, config);
     return result;
   }
   
-  static decrypt (encrypted, formats) {
-    let res = "";
+  static decrypt (content, formats) {
+    let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+    let encrypted = Buffer.from(content, "base64").toString();
+    let isValid = base64regex.test(encrypted);
+    
+    if (!isValid) return content;
     for (let key in formats) {
       let format = formats[key];
-      let search = encrypted.search(format);
       encrypted = encrypted.split(format).join(key);
     }
     

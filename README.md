@@ -1,6 +1,20 @@
 # fast encryptor
 
-## encrypt file
+## encryption
+### encrypt text of string
+
+```javascript
+const { Encryptor } = require("fast-encrypt");
+
+let text = "Hello World!";
+let result = Encryptor.encrypt(text, {
+  level: 1
+}); // return object
+
+console.log(result.hash) // results of encryption
+```
+
+### encrypt file
 
 ```javascript
 const { Encryptor } = require("fast-encrypt");
@@ -19,7 +33,27 @@ let result = Encryptor.encrypt(content, {
 fs.writeFileSync(pathfile, result);
 ```
 
-## decrypt file
+## decryption
+### decrypt text of encryption
+
+```javascript
+const { Encryptor } = require("fast-encrypt");
+
+const getEncryptor = async (resource) => {
+  let response = await fetch(resource);
+  let result = await response.json();
+  return result;
+}
+
+let encryptor = getEncryptor("encryptor.json");
+let text = "some encrypted text...";
+let formats = encryptor.formats;
+let result = Encryptor.decrypt(text, encryptor.formats); // return object
+
+console.log(result) // string of decrypted contents
+```
+
+### decrypt file
 
 ```javascript
 const { Encryptor } = require("fast-encrypt");

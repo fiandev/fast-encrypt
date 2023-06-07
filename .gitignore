@@ -1,5 +1,7 @@
 /__test__
 
-test.js
-test_decrypt.js
-node_modules
+./test.js
+./test2.js
+
+
+/node_modules

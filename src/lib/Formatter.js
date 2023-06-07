@@ -2,8 +2,8 @@ const { random_item, shuffle, random_integer } = require("../utils/functions.js"
 
 class Formatter {
   static formats = []
-  
-  static make (min = 3, max = 5, character = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_ `) {
+  /* character result encrypted */
+  static make (min = 3, max = 5, character = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_><][^¥€¢£∆¶×÷π√•|~%©®™°@#$&-+)(/?!;:*`) {
     let each = random_integer(min, max);
     let chars = character.split("");
     let res = "";
@@ -11,7 +11,7 @@ class Formatter {
     for (let i = 0; i < each; i++) res += random_item(shuffle(chars));
     
     if (this.formats.includes(res)) {
-      return this.formats.includes(res);
+      return Formatter.make(min, max, character);
     } else {
       this.formats.push(res);
       return res;
@@ -23,7 +23,7 @@ class Formatter {
     let res = {};
     
     for (let key of chars) {
-      let format = Formatter.make(5, 8);
+      let format = Formatter.make(5, 5);
       res[key] = format;
     }
     
