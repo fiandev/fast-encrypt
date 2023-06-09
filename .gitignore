@@ -1,7 +1,4 @@
 /__test__
-
-./test.js
-./test2.js
-
+/*.{js,ts}
 
 /node_modules
