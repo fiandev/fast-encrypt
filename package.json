@@ -1,11 +1,23 @@
 {
   "name": "fast-encrypt",
-  "version": "1.0.5",
-  "description": "",
+  "version": "1.1.0",
+  "description": "fast encryptor for text/file (not binary) without any libraries required.",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "start": "node dist/index.js"
   },
+  "keywords": ["encryption", "nodejs", "js", "ts", "javascript", "typescript"],
   "author": "fiandev",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fiandev/fast-encrypt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fiandev/fast-encrypt/issues"
+  },
+  "homepage": "https://github.com/fiandev/fast-encrypt#readme",
+  "devDependencies": {
+    "@types/node": "^20.2.5"
+  }
 }

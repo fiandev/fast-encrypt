@@ -1,9 +1,11 @@
 const { random_item, shuffle, random_integer } = require("../utils/functions.js");
+import type { DynamicObject } from "../types";
 
 class Formatter {
-  static formats = []
+  public static formats: any[] = []
+  
   /* character result encrypted */
-  static make (min = 3, max = 5, character = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_><][^¥€¢£∆¶×÷π√•|~%©®™°@#$&-+)(/?!;:*`) {
+  private static make (min: number = 3, max: number = 5, character: string = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_><][^¥€¢£∆¶×÷π√•|~%©®™°@#$&-+)(/?!;:*`): string {
     let each = random_integer(min, max);
     let chars = character.split("");
     let res = "";
@@ -18,9 +20,9 @@ class Formatter {
     }
   }
   
-  static create (character = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$)(!?:][|/-*+%&,"'=><;.\n}{_ `) {
+  public static create (character: string = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$)(!?:][|/-*+%&,"'=><;.\n}{_ `): DynamicObject {
     let chars = character.split("");
-    let res = {};
+    let res: DynamicObject = {};
     
     for (let key of chars) {
       let format = Formatter.make(5, 5);

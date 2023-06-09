@@ -1,14 +1,17 @@
 const fs = require("fs");
 const path = require("path");
 
-const Formatter = require("./Formatter.js");
-const { now } = require("../utils/functions.js");
+const Formatter = require("./Formatter");
+const { now } = require("../utils/functions");
+import type { Result, Configuration, EncryptorFile } from "../types/Encryptor";
+import type { DynamicObject } from "../types";
 
 class Encryptor {
-  static generate_decryptor(result = {}, config) {
-    const { output, pretty = true } = config;
+  private static generate_decryptor(result: Result, config: Configuration): void | boolean {
+    const { output = null, pretty = true } = config;
     const supported_extension = [".json"];
     
+    if (!output) return false;
     let ext = path.extname(output.filename);
     if (!supported_extension.includes(ext)) throw new Error(`Unsupported extension for decryptor file expected [${ supported_extension.toString().replace(",", "|") }]`);
     
@@ -29,13 +32,29 @@ class Encryptor {
     console.log(`create file ${ output.filename }`);
   }
   
-  static encrypt (text, config = {}) {
+  private static textToBase64 (text: string, each: number): string {
+    for (let i = 1; i <= each; i++) {
+      text = Buffer.from(text).toString("base64")
+    }
+    return text;
+  }
+  
+  private static base64ToText (text: string, each: number): string {
+    for (let i = 1; i <= each; i++) {
+      text = Buffer.from(text, "base64").toString();
+    }
+    return text;
+  }
+  
+  public static encrypt (text: string, config: Configuration): Result {
     let chars = text.split("");
-    let formats = Formatter.create();
+    let { level = 1 } = config;
+    let formats: DynamicObject = Formatter.create();
     let hash = chars.map(char => formats[char] || " ").join("");
     
-    let result = {
-      hash: Buffer.from(hash).toString("base64"),
+    let result: Result = {
+      hash: Encryptor.textToBase64(hash, level),
+      level: level,
       formats: formats,
       date: now()
     };
@@ -44,11 +63,13 @@ class Encryptor {
     return result;
   }
   
-  static decrypt (content, formats) {
+  public static decrypt (content: string, encryptor: EncryptorFile): string {
+    let { formats, level } = encryptor;
     let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-    let encrypted = Buffer.from(content, "base64").toString();
-    let isValid = base64regex.test(encrypted);
+    let encrypted: string = Encryptor.base64ToText(content, level);
+    let isValid: boolean = base64regex.test(content);
     
+    if (!formats || !level) throw new Error("failed, encryptor object is not valid !");
     if (!isValid) return content;
     for (let key in formats) {
       let format = formats[key];

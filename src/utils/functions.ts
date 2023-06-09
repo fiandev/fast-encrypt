@@ -1,5 +1,6 @@
-function shuffle(array) {
-  let currentIndex = array.length,  randomIndex;
+function shuffle(array: any[]): any[] {
+  let currentIndex = array.length;
+  let randomIndex: number;
 
   // While there remain elements to shuffle.
   while (currentIndex != 0) {
@@ -16,17 +17,18 @@ function shuffle(array) {
   return array;
 }
 
-function random_integer (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function random_integer (min: number, max: number): number {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function random_item (arr) {
+function random_item (arr: any[]): any {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function now () {
+function now (): string {
   return new Date().toLocaleString();
 }
 

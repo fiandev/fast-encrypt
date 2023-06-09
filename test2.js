@@ -1,4 +1,4 @@
-const { Encryptor } = require("./index.js");
+const { Encryptor } = require("./dist/index.js");
 
 const getEncryptor = async (resource) => {
   let response = await fetch(resource);
