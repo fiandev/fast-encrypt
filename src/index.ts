@@ -3,5 +3,5 @@ const Formatter = require("./lib/Formatter.js");
 
 module.exports = {
   Encryptor,
-  Formatter
+  Formatter,
 };

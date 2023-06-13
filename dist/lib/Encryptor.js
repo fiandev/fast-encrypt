@@ -1,71 +1,104 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
-const path = require("path");
-const Formatter = require("./Formatter");
-const { now } = require("../utils/functions");
-class Encryptor {
-    static generate_decryptor(result, config) {
-        const { output = null, pretty = true } = config;
-        const supported_extension = [".json"];
+var _fs = require("fs");
+var _path = require("path");
+var _cryptoJS = require("crypto-js");
+var Formatter = require("./Formatter");
+var now = require("../utils/functions").now;
+var Encryptor = /** @class */ (function () {
+    function Encryptor() {
+    }
+    Encryptor.decryptorGenerate = function (result, config) {
+        var defaultOutput = {
+            path: "./",
+            filename: "decryptor.json",
+        };
+        var _a = config.output, output = _a === void 0 ? defaultOutput : _a, _b = config.pretty, pretty = _b === void 0 ? true : _b;
+        var supported_extension = [".json"];
         if (!output)
-            return false;
-        let ext = path.extname(output.filename);
+            return;
+        var ext = _path.extname(output.filename);
         if (!supported_extension.includes(ext))
-            throw new Error(`Unsupported extension for decryptor file expected [${supported_extension.toString().replace(",", "|")}]`);
-        let path_output = path.join(process.cwd(), output.path);
+            throw new Error("Unsupported extension for decryptor file expected [".concat(supported_extension
+                .toString()
+                .replace(",", "|"), "]"));
+        var path_output = _path.join(process.cwd(), output.path);
         try {
-            if (!fs.existsSync(path_output))
-                fs.mkdirSync(path_output, { recursive: true });
+            if (!_fs.existsSync(path_output))
+                _fs.mkdirSync(path_output, { recursive: true });
         }
         catch (e) {
-            throw new Error(`can't create path of folders`);
+            throw new Error("can't create path of folders");
         }
-        let pathFile = path.join(path_output, output.filename);
-        fs.writeFileSync(pathFile, JSON.stringify(result, null, pretty ? 2 : 0));
-        console.log(`create file ${output.filename}`);
-    }
-    static textToBase64(text, each) {
-        for (let i = 1; i <= each; i++) {
+        var pathFile = _path.join(path_output, output.filename);
+        _fs.writeFileSync(pathFile, JSON.stringify(result, null, pretty ? 2 : 0));
+        console.log("create file ".concat(output.filename));
+    };
+    Encryptor.textToBase64 = function (text, each) {
+        for (var i = 1; i <= each; i++) {
             text = Buffer.from(text).toString("base64");
         }
         return text;
-    }
-    static base64ToText(text, each) {
-        for (let i = 1; i <= each; i++) {
+    };
+    Encryptor.base64ToText = function (text, each) {
+        for (var i = 1; i <= each; i++) {
             text = Buffer.from(text, "base64").toString();
         }
         return text;
-    }
-    static encrypt(text, config) {
-        let chars = text.split("");
-        let { level = 1 } = config;
-        let formats = Formatter.create();
-        let hash = chars.map(char => formats[char] || " ").join("");
-        let result = {
+    };
+    Encryptor.cryptoEncrypt = function (text, crypto) {
+        var _a = crypto.algorithm, algorithm = _a === void 0 ? "AES" : _a, key = crypto.key, _b = crypto.expired, expired = _b === void 0 ? null : _b;
+        var cipher = _cryptoJS[algorithm].encrypt(text, key);
+        return cipher.toString();
+    };
+    Encryptor.cryptoDecrypt = function (encrypted, key, algorithm) {
+        if (algorithm === void 0) { algorithm = "AES"; }
+        var bytes = _cryptoJS[algorithm].decrypt(encrypted, key);
+        var decrypted = bytes.toString(_cryptoJS.enc.Utf8);
+        return decrypted;
+    };
+    Encryptor.basicEncrypt = function (text, config) {
+        var _a = config.level, level = _a === void 0 ? 1 : _a;
+        var formats = Formatter.create();
+        var hash = text
+            .split("")
+            .map(function (char) { return formats[char] || " "; })
+            .join("");
+        var result = {
             hash: Encryptor.textToBase64(hash, level),
             level: level,
             formats: formats,
-            date: now()
+            date: now(),
         };
-        Encryptor.generate_decryptor(result, config);
+        Encryptor.decryptorGenerate(result, config);
         return result;
-    }
-    static decrypt(content, encryptor) {
-        let { formats, level } = encryptor;
-        let base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-        let encrypted = Encryptor.base64ToText(content, level);
-        let isValid = base64regex.test(content);
+    };
+    Encryptor.encrypt = function (text, config) {
+        var chars = text.split("");
+        var _a = config.level, level = _a === void 0 ? 1 : _a, _b = config.crypto, crypto = _b === void 0 ? null : _b;
+        if (crypto)
+            return Encryptor.cryptoEncrypt(text, crypto);
+        else
+            return Encryptor.basicEncrypt(text, config);
+    };
+    Encryptor.decrypt = function (text, decryptor) {
+        if (typeof decryptor === "string")
+            return Encryptor.cryptoDecrypt(text, decryptor);
+        var formats = decryptor.formats, level = decryptor.level;
+        var base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+        var res = Encryptor.base64ToText(text, level);
+        var isValid = base64regex.test(text);
         if (!formats || !level)
-            throw new Error("failed, encryptor object is not valid !");
+            throw new Error("failed, decryptor object is not valid !");
         if (!isValid)
-            return content;
-        for (let key in formats) {
-            let format = formats[key];
-            encrypted = encrypted.split(format).join(key);
+            return text;
+        for (var key in formats) {
+            var format = formats[key];
+            res = res.split(format).join(key);
         }
-        return encrypted;
-    }
-}
+        return res;
+    };
+    return Encryptor;
+}());
 module.exports = Encryptor;
 //# sourceMappingURL=Encryptor.js.map

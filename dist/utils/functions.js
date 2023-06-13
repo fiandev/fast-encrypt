@@ -1,16 +1,18 @@
 "use strict";
 function shuffle(array) {
-    let currentIndex = array.length;
-    let randomIndex;
+    var _a;
+    var currentIndex = array.length;
+    var randomIndex;
     // While there remain elements to shuffle.
     while (currentIndex != 0) {
         // Pick a remaining element.
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
         // And swap it with the current element.
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]
-        ];
+        _a = [
+            array[randomIndex],
+            array[currentIndex],
+        ], array[currentIndex] = _a[0], array[randomIndex] = _a[1];
     }
     return array;
 }
@@ -26,9 +28,9 @@ function now() {
     return new Date().toLocaleString();
 }
 module.exports = {
-    shuffle,
-    random_item,
-    random_integer,
-    now,
+    shuffle: shuffle,
+    random_item: random_item,
+    random_integer: random_integer,
+    now: now,
 };
 //# sourceMappingURL=functions.js.map

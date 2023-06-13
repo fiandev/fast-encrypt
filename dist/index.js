@@ -1,8 +1,8 @@
 "use strict";
-const Encryptor = require("./lib/Encryptor.js");
-const Formatter = require("./lib/Formatter.js");
+var Encryptor = require("./lib/Encryptor.js");
+var Formatter = require("./lib/Formatter.js");
 module.exports = {
-    Encryptor,
-    Formatter
+    Encryptor: Encryptor,
+    Formatter: Formatter,
 };
 //# sourceMappingURL=index.js.map
