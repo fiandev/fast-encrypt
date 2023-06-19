@@ -1,4 +1,4 @@
-function shuffle(array: any[]): any[] {
+export function shuffle(array: any[]): any[] {
   let currentIndex = array.length;
   let randomIndex: number;
 
@@ -18,24 +18,17 @@ function shuffle(array: any[]): any[] {
   return array;
 }
 
-function random_integer(min: number, max: number): number {
+export function random_integer(min: number, max: number): number {
   min = Math.ceil(min);
   max = Math.floor(max);
 
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function random_item(arr: any[]): any {
+export function random_item(arr: any[]): any {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function now(): string {
+export function now(): string {
   return new Date().toLocaleString();
 }
-
-module.exports = {
-  shuffle,
-  random_item,
-  random_integer,
-  now,
-};

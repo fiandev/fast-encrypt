@@ -1,14 +1,13 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.now = exports.random_item = exports.random_integer = exports.shuffle = void 0;
 function shuffle(array) {
     var _a;
     var currentIndex = array.length;
     var randomIndex;
-    // While there remain elements to shuffle.
     while (currentIndex != 0) {
-        // Pick a remaining element.
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-        // And swap it with the current element.
         _a = [
             array[randomIndex],
             array[currentIndex],
@@ -16,21 +15,19 @@ function shuffle(array) {
     }
     return array;
 }
+exports.shuffle = shuffle;
 function random_integer(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+exports.random_integer = random_integer;
 function random_item(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
+exports.random_item = random_item;
 function now() {
     return new Date().toLocaleString();
 }
-module.exports = {
-    shuffle: shuffle,
-    random_item: random_item,
-    random_integer: random_integer,
-    now: now,
-};
+exports.now = now;
 //# sourceMappingURL=functions.js.map

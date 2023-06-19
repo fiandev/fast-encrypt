@@ -1,8 +1,5 @@
 "use strict";
-var Encryptor = require("./lib/Encryptor.js");
-var Formatter = require("./lib/Formatter.js");
-module.exports = {
-    Encryptor: Encryptor,
-    Formatter: Formatter,
-};
+require("module-alias/register");
+var Encryptor_1 = require("@/lib/Encryptor");
+module.exports = Encryptor_1.default;
 //# sourceMappingURL=index.js.map

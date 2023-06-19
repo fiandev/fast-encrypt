@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var _fs = require("fs");
 var _path = require("path");
 var _cryptoJS = require("crypto-js");
-var Formatter = require("./Formatter");
-var now = require("../utils/functions").now;
-var Encryptor = /** @class */ (function () {
+var Formatter_1 = require("@/lib/Formatter");
+var functions_1 = require("@/utils/functions");
+var Encryptor = (function () {
     function Encryptor() {
     }
     Encryptor.decryptorGenerate = function (result, config) {
@@ -59,7 +59,7 @@ var Encryptor = /** @class */ (function () {
     };
     Encryptor.basicEncrypt = function (text, config) {
         var _a = config.level, level = _a === void 0 ? 1 : _a;
-        var formats = Formatter.create();
+        var formats = Formatter_1.default.create();
         var hash = text
             .split("")
             .map(function (char) { return formats[char] || " "; })
@@ -68,7 +68,7 @@ var Encryptor = /** @class */ (function () {
             hash: Encryptor.textToBase64(hash, level),
             level: level,
             formats: formats,
-            date: now(),
+            date: (0, functions_1.now)(),
         };
         Encryptor.decryptorGenerate(result, config);
         return result;
@@ -76,6 +76,10 @@ var Encryptor = /** @class */ (function () {
     Encryptor.encrypt = function (text, config) {
         var chars = text.split("");
         var _a = config.level, level = _a === void 0 ? 1 : _a, _b = config.crypto, crypto = _b === void 0 ? null : _b;
+        if (text.length > 1000 && level > 3)
+            throw new Error("Maximum level exceeded, maximum level is 3 but given ".concat(level));
+        if (level > 5)
+            throw new Error("Maximum level exceeded, maximum level is 5 but given ".concat(level));
         if (crypto)
             return Encryptor.cryptoEncrypt(text, crypto);
         else
@@ -100,5 +104,5 @@ var Encryptor = /** @class */ (function () {
     };
     return Encryptor;
 }());
-module.exports = Encryptor;
+exports.default = Encryptor;
 //# sourceMappingURL=Encryptor.js.map

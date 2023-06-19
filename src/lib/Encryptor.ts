@@ -2,8 +2,8 @@ const _fs = require("fs");
 const _path = require("path");
 const _cryptoJS = require("crypto-js");
 
-const Formatter = require("./Formatter");
-const { now } = require("../utils/functions");
+import Formatter from "@/lib/Formatter";
+import { now } from "@/utils/functions";
 import type {
   Result,
   Output,
@@ -11,9 +11,9 @@ import type {
   DecryptorFile,
   DynamicObject,
   CryptoConfiguration,
-} from "../types";
+} from "@/types";
 
-class Encryptor {
+export default class Encryptor {
   private static decryptorGenerate(
     result: Result,
     config: Configuration
@@ -69,7 +69,10 @@ class Encryptor {
     crypto: CryptoConfiguration
   ): string {
     const { algorithm = "AES", key, expired = null } = crypto;
-    let cipher = _cryptoJS[algorithm].encrypt(text, key);
+    let cipher = _cryptoJS[algorithm as keyof typeof _cryptoJS].encrypt(
+      text,
+      key
+    );
 
     return cipher.toString();
   }
@@ -79,7 +82,10 @@ class Encryptor {
     key: string,
     algorithm: string = "AES"
   ): string {
-    let bytes = _cryptoJS[algorithm].decrypt(encrypted, key);
+    let bytes = _cryptoJS[algorithm as keyof typeof _cryptoJS].decrypt(
+      encrypted,
+      key
+    );
     let decrypted = bytes.toString(_cryptoJS.enc.Utf8);
 
     return decrypted;
@@ -105,9 +111,12 @@ class Encryptor {
   }
 
   public static encrypt(text: string, config: Configuration): Result | string {
-    let chars = text.split("");
+    let chars: string[] = text.split("");
     let { level = 1, crypto = null } = config;
-
+    
+    if (text.length > 1000 && level > 3) throw new Error(`Maximum level exceeded, maximum level is 3 but given ${ level }`);
+    if (level > 5) throw new Error(`Maximum level exceeded, maximum level is 5 but given ${ level }`);
+    
     if (crypto) return Encryptor.cryptoEncrypt(text, crypto);
     else return Encryptor.basicEncrypt(text, config);
   }
@@ -129,12 +138,10 @@ class Encryptor {
       throw new Error("failed, decryptor object is not valid !");
     if (!isValid) return text;
     for (let key in formats) {
-      let format = formats[key];
+      let format: string = formats[key];
       res = res.split(format).join(key);
     }
 
     return res;
   }
 }
-
-module.exports = Encryptor;

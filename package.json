@@ -1,11 +1,12 @@
 {
   "name": "fast-encrypt",
-  "version": "1.1.0",
+  "version": "1.1.5",
   "description": "fast encryptor for text/file (not binary) without any libraries required.",
   "main": "dist/index.js",
   "scripts": {
     "test": "node __test__/test.js",
     "dev": "tsc --watch",
+    "build": "tsc",
     "start": "node dist/index.js",
     "prettier": "prettier ./src/**/*.{js,ts} -w"
   },
@@ -28,10 +29,15 @@
   },
   "homepage": "https://github.com/fiandev/fast-encrypt#readme",
   "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
     "@types/node": "^20.2.5",
     "prettier": "^2.8.8"
   },
   "dependencies": {
-    "crypto-js": "^4.1.1"
+    "crypto-js": "^4.1.1",
+    "module-alias": "^2.2.3"
+  },
+  "_moduleAliases": {
+    "@": "./dist"
   }
 }
