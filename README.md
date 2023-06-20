@@ -8,7 +8,7 @@ fast decryptor for text/file (not binary) without any libraries required.
 ### encrypt text of string
 
 ```javascript
-const { Encryptor } = require("fast-encrypt");
+const Encryptor = require("fast-encrypt");
 
 let text = "Hello World!";
 let result = Encryptor.encrypt(text, {
@@ -21,7 +21,7 @@ console.log(result.hash) // results of encryption
 ### encrypt file
 
 ```javascript
-const { Encryptor } = require("fast-encrypt");
+const Encryptor = require("fast-encrypt");
 const fs = require("fs");
 const path = require("path");
 
@@ -40,7 +40,7 @@ fs.writeFileSync(pathfile, result);
 ### use string key / cipher (cryptoJS)
 
 ```javascript
-const { Encryptor } = require("fast-encrypt");
+const Encryptor = require("fast-encrypt");
 
 let encrypted = Encryptor.cryptoEncrypt("Hello World!", {
   key: "secret",
@@ -53,7 +53,7 @@ let encrypted = Encryptor.cryptoEncrypt("Hello World!", {
 ### decrypt text of encryption
 
 ```javascript
-const { Encryptor } = require("fast-encrypt");
+const Encryptor = require("fast-encrypt");
 
 const getEncryptor = async (resource) => {
   let response = await fetch(resource);
@@ -72,7 +72,7 @@ console.log(result) // string of decrypted contents
 ### decrypt file
 
 ```javascript
-const { Encryptor } = require("fast-encrypt");
+const Encryptor = require("fast-encrypt");
 const fs = require("fs");
 const path = require("path");
 
@@ -91,7 +91,7 @@ fs.writeFileSync(pathfile, decrypted);
 ### use string key / cipher (cryptoJS)
 
 ```javascript
-const { Encryptor } = require("fast-encrypt");
+const Encryptor = require("fast-encrypt");
 let decrypted = Encryptor.cryptoDecrypt(encrypted, "secret", "AES"); // returb "Hello World!
 ```
 

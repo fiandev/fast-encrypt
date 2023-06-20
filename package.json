@@ -1,6 +1,6 @@
 {
   "name": "fast-encrypt",
-  "version": "1.2.0",
+  "version": "1.2.5",
   "description": "fast encryptor for text/file (not binary) without any libraries required.",
   "main": "dist/index.js",
   "scripts": {
