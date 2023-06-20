@@ -3,7 +3,8 @@ const _path = require("path");
 const _cryptoJS = require("crypto-js");
 
 import Formatter from "@/lib/Formatter";
-import { now } from "@/utils/functions";
+import { now, sprintf } from "@/utils/functions";
+
 import type {
   Result,
   Output,
@@ -14,6 +15,7 @@ import type {
 } from "@/types";
 
 export default class Encryptor {
+  private static formats: DynamicObject;
   private static decryptorGenerate(
     result: Result,
     config: Configuration
@@ -27,14 +29,15 @@ export default class Encryptor {
     const supported_extension = [".json"];
 
     if (!output) return;
-    let ext = _path.extname(output.filename);
-    if (!supported_extension.includes(ext))
+    let extension = _path.extname(output.filename);
+    if (!supported_extension.includes(extension))
       throw new Error(
-        `Unsupported extension for decryptor file expected [${supported_extension
-          .toString()
-          .replace(",", "|")}]`
+        sprintf(
+          "Unsupported extension for decryptor file expected %s, but '%s' given",
+          supported_extension.toString(),
+          extension
+        )
       );
-
     let path_output = _path.join(process.cwd(), output.path);
 
     try {
@@ -43,6 +46,13 @@ export default class Encryptor {
     } catch (e) {
       throw new Error(`can't create path of folders`);
     }
+    /*
+     * delete unused attribute
+     */
+    let unUsedAttribute = ["hash"];
+    unUsedAttribute.forEach(
+      (attr) => delete result[attr as keyof typeof result]
+    );
 
     let pathFile = _path.join(path_output, output.filename);
     _fs.writeFileSync(pathFile, JSON.stringify(result, null, pretty ? 2 : 0));
@@ -93,7 +103,8 @@ export default class Encryptor {
 
   public static basicEncrypt(text: string, config: Configuration) {
     const { level = 1 } = config;
-    let formats: DynamicObject = Formatter.create();
+    let formats: DynamicObject =
+      this.formats.length > 0 ? this.formats : Formatter.create();
     let hash: string = text
       .split("")
       .map((char) => formats[char] || " ")
@@ -106,19 +117,42 @@ export default class Encryptor {
       date: now(),
     };
 
-    Encryptor.decryptorGenerate(result, config);
+    if (config.output) Encryptor.decryptorGenerate(result, config);
     return result;
   }
 
-  public static encrypt(text: string, config: Configuration): Result | string {
-    let chars: string[] = text.split("");
-    let { level = 1, crypto = null } = config;
-    
-    if (text.length > 1000 && level > 3) throw new Error(`Maximum level exceeded, maximum level is 3 but given ${ level }`);
-    if (level > 5) throw new Error(`Maximum level exceeded, maximum level is 5 but given ${ level }`);
-    
-    if (crypto) return Encryptor.cryptoEncrypt(text, crypto);
-    else return Encryptor.basicEncrypt(text, config);
+  public static encrypt(
+    input: string | string[],
+    config: Configuration
+  ): Result | string {
+    const entities: string[] = [];
+    const result: any[] = [];
+
+    if (!Array.isArray(input) && typeof input === "string") {
+      entities.push(input);
+    } else {
+      this.formats = Formatter.create();
+      input.map((item) => entities.push(item));
+    }
+
+    for (let text of entities) {
+      let chars: string[] = text.split("");
+      let { level = 1, crypto = null } = config;
+
+      if (text.length > 1000 && level > 3)
+        throw new Error(
+          `Maximum level exceeded, maximum level is 3 but given ${level}`
+        );
+      if (level > 5)
+        throw new Error(
+          `Maximum level exceeded, maximum level is 5 but given ${level}`
+        );
+
+      if (crypto) result.push(Encryptor.cryptoEncrypt(text, crypto));
+      else result.push(Encryptor.basicEncrypt(text, config));
+    }
+
+    return result.length < 1 ? result[0] : result;
   }
 
   public static decrypt(
@@ -134,7 +168,7 @@ export default class Encryptor {
     let res: string = Encryptor.base64ToText(text, level);
     let isValid: boolean = base64regex.test(text);
 
-    if (!formats || !level)
+    if (!formats && !level)
       throw new Error("failed, decryptor object is not valid !");
     if (!isValid) return text;
     for (let key in formats) {
