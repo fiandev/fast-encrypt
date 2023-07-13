@@ -35,11 +35,11 @@ function sprintf(input) {
     for (var _i = 1; _i < arguments.length; _i++) {
         replacements[_i - 1] = arguments[_i];
     }
-    var exp = /(\%(s|d))/mg;
-    var splits = input.split(/(%s|%d)/mg);
+    var exp = /(\%(s|d))/gm;
+    var splits = input.split(/(%s|%d)/gm);
     var types = {
         "%d": "number",
-        "%s": "string"
+        "%s": "string",
     };
     var counter = 0;
     var _loop_1 = function (i) {

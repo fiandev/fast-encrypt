@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var _fs = require("fs");
 var _path = require("path");
 var _cryptoJS = require("crypto-js");
-var Formatter_1 = require("@/lib/Formatter");
-var functions_1 = require("@/utils/functions");
+var Formatter_1 = require("./Formatter");
+var functions_1 = require("../utils/functions");
 var Encryptor = (function () {
     function Encryptor() {
     }

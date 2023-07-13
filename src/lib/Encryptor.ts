@@ -2,8 +2,8 @@ const _fs = require("fs");
 const _path = require("path");
 const _cryptoJS = require("crypto-js");
 
-import Formatter from "@/lib/Formatter";
-import { now, sprintf } from "@/utils/functions";
+import Formatter from "./Formatter";
+import { now, sprintf } from "../utils/functions";
 
 import type {
   Result,

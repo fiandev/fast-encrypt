@@ -1,5 +1,5 @@
-import { random_item, shuffle, random_integer } from "@/utils/functions.js";
-import type { DynamicObject } from "@/types";
+import { random_item, shuffle, random_integer } from "../utils/functions.js";
+import type { DynamicObject } from "../types";
 
 export default class Formatter {
   private static formats: string[] = [];

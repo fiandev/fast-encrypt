@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var functions_js_1 = require("@/utils/functions.js");
+var functions_js_1 = require("../utils/functions.js");
 var Formatter = (function () {
     function Formatter() {
     }
